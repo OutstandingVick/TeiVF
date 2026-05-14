@@ -70,34 +70,32 @@ button {
 }
 
 .velocity-mark {
-  display: inline-flex;
-  align-items: center;
+  display: inline-grid;
+  place-items: center;
+  width: 82px;
   height: 48px;
-  min-width: 62px;
-  padding: 6px 8px;
+  padding: 0;
   border: 2px solid var(--lime);
-  color: var(--ink);
-  font-family: var(--display);
-  font-size: 30px;
-  font-weight: 950;
-  line-height: 1;
-  letter-spacing: 0;
   text-decoration: none;
   transform: skewX(-15deg);
 }
 
-.velocity-mark span {
-  display: inline-block;
+.tei-logo {
+  width: 68px;
+  height: 44px;
   transform: skewX(15deg);
 }
 
-.mark-t {
-  color: var(--lime);
+.logo-green {
+  fill: var(--lime);
 }
 
-.mark-ei {
-  margin-left: -4px;
-  color: var(--ink);
+.logo-white {
+  fill: #f8f8f8;
+}
+
+.logo-obsidian {
+  fill: #090909;
 }
 
 .match-strip {
@@ -679,16 +677,21 @@ h1 {
     flex-direction: column;
   }
 
-  .card-body {
-    grid-template-columns: 1fr;
-  }
-
-  .sparkline {
-    height: 72px;
+  .feed {
+    gap: 14px;
   }
 
   .market-card {
-    min-height: 340px;
+    min-height: 0;
+  }
+
+  .card-body {
+    grid-template-columns: minmax(0, 1fr) 120px;
+    gap: 10px;
+  }
+
+  .sparkline {
+    height: 56px;
   }
 
   .trade-tray {
@@ -705,9 +708,13 @@ h1 {
   }
 
   .velocity-mark {
+    width: 70px;
     height: 42px;
-    min-width: 52px;
-    font-size: 25px;
+  }
+
+  .tei-logo {
+    width: 58px;
+    height: 38px;
   }
 
   .match-pill {
@@ -720,28 +727,84 @@ h1 {
     padding-top: 18px;
   }
 
-  .market-question {
-    font-size: 40px;
+  .feed-head {
+    padding-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 38px;
+  }
+
+  .market-card {
+    box-shadow: 5px 5px 0 rgba(0, 255, 0, 0.16), 0 14px 28px rgba(0, 0, 0, 0.44);
   }
 
   .ticker-header {
-    padding: 16px 14px;
+    grid-template-columns: minmax(0, 1fr) 78px;
+    gap: 8px;
+    padding: 12px 12px 11px;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+  }
+
+  .clock {
+    margin-bottom: 8px;
+    padding: 4px 7px;
+    font-size: 11px;
+  }
+
+  .market-question {
+    max-width: 11ch;
+    font-size: 32px;
+    line-height: 0.9;
+  }
+
+  .market-meta {
+    font-size: 10px;
+  }
+
+  .price {
+    margin-top: 6px;
+    font-size: 22px;
   }
 
   .card-body {
-    padding: 16px 14px;
+    padding: 12px;
+  }
+
+  .body-copy {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .body-copy strong {
+    margin-bottom: 5px;
+    font-size: 10px;
+  }
+
+  .sparkline {
+    height: 46px;
+  }
+
+  .sparkline path {
+    stroke-width: 3;
   }
 
   .action-zones {
-    min-height: 136px;
+    min-height: 92px;
   }
 
   .zone {
-    padding: 20px 14px;
+    gap: 5px;
+    padding: 16px 12px;
   }
 
   .zone span {
-    font-size: 28px;
+    font-size: 25px;
+  }
+
+  .zone small {
+    font-size: 11px;
   }
 }
 
