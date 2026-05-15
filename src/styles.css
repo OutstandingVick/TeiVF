@@ -785,9 +785,15 @@ h1 {
 
   .wallet-shell {
     grid-column: 1 / -1;
+    grid-row: 2;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto auto auto;
     gap: 8px;
+  }
+
+  .theme-toggle {
+    grid-column: 3;
+    grid-row: 1;
   }
 
   .wallet-balance {
