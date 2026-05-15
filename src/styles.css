@@ -236,7 +236,7 @@ h1 {
   position: relative;
   z-index: 1;
   display: grid;
-  gap: 18px;
+  gap: 26px;
 }
 
 .market-card {
@@ -678,7 +678,7 @@ h1 {
   }
 
   .feed {
-    gap: 14px;
+    gap: 22px;
   }
 
   .market-card {
