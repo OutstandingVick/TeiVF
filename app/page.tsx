@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+type Currency = "NGN" | "USD";
+
 type MarketTuple = [string, string, string, string, number, string, string];
 
 type Market = {
@@ -45,6 +47,56 @@ const matchPills = [
   ["ARS", "2", "78:02", "0", "CHE"],
   ["INT", "0", "HT", "0", "JUV"]
 ];
+
+const currencyLocales: Record<Currency, string> = {
+  NGN: "en-NG",
+  USD: "en-US"
+};
+
+const walletBalances: Record<Currency, number> = {
+  NGN: 24800,
+  USD: 16.5
+};
+
+const stakePresets: Record<Currency, Array<[string, string]>> = {
+  NGN: [
+    ["₦500", "500"],
+    ["₦1K", "1000"],
+    ["₦5K", "5000"]
+  ],
+  USD: [
+    ["$1", "1"],
+    ["$5", "5"],
+    ["$10", "10"]
+  ]
+};
+
+const currencyRateFromNgn: Record<Currency, number> = {
+  NGN: 1,
+  USD: 1 / 1500
+};
+
+const payoutUnit: Record<Currency, number> = {
+  NGN: 1,
+  USD: 1
+};
+
+function convertFromNgn(amount: number, currency: Currency) {
+  return amount * currencyRateFromNgn[currency];
+}
+
+function formatMoney(amount: number, currency: Currency, notation: "standard" | "compact" = "standard") {
+  return new Intl.NumberFormat(currencyLocales[currency], {
+    style: "currency",
+    currency,
+    notation,
+    maximumFractionDigits: currency === "NGN" ? 0 : 2
+  }).format(amount);
+}
+
+function formatMatchedVolume(volumeInThousandsNgn: number, currency: Currency) {
+  return `${formatMoney(convertFromNgn(volumeInThousandsNgn * 1000, currency), currency, "compact")} matched`;
+}
 
 function vibrate(pattern: number | number[]) {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -121,7 +173,7 @@ function TeiLogo() {
   );
 }
 
-function Topbar({ onToggleTheme }: { onToggleTheme: () => void }) {
+function Topbar({ currency, onCurrencyChange, onToggleTheme }: { currency: Currency; onCurrencyChange: (currency: Currency) => void; onToggleTheme: () => void }) {
   return (
     <header className="topbar">
       <a className="velocity-mark" aria-label="Tei home" href="#">
@@ -138,6 +190,7 @@ function Topbar({ onToggleTheme }: { onToggleTheme: () => void }) {
           </button>
         ))}
       </div>
+      <WalletBar currency={currency} onCurrencyChange={onCurrencyChange} />
       <button className="theme-toggle" type="button" aria-label="Toggle color mode" onClick={onToggleTheme}>
         ◐
       </button>
@@ -145,7 +198,31 @@ function Topbar({ onToggleTheme }: { onToggleTheme: () => void }) {
   );
 }
 
-function MarketCard({ market, onTrade }: { market: Market; onTrade: (market: Market, side: string) => void }) {
+function WalletBar({ currency, onCurrencyChange }: { currency: Currency; onCurrencyChange: (currency: Currency) => void }) {
+  return (
+    <div className="wallet-shell" aria-label="Wallet summary">
+      <div className="wallet-balance">
+        <span>Balance</span>
+        <strong>{formatMoney(walletBalances[currency], currency)}</strong>
+      </div>
+      <div className="currency-toggle" aria-label="Display currency">
+        {(["NGN", "USD"] as Currency[]).map((code) => (
+          <button className={currency === code ? "active" : ""} type="button" key={code} onClick={() => onCurrencyChange(code)}>
+            {code}
+          </button>
+        ))}
+      </div>
+      <button className="wallet-action" type="button">
+        Add Cash
+      </button>
+      <button className="wallet-action muted" type="button">
+        Cash Out
+      </button>
+    </div>
+  );
+}
+
+function MarketCard({ market, currency, onTrade }: { market: Market; currency: Currency; onTrade: (market: Market, side: string) => void }) {
   return (
     <article className={`market-card ${market.injected ? "injected" : ""}`} data-testid="market-card">
       <div className="ticker-header">
@@ -156,7 +233,7 @@ function MarketCard({ market, onTrade }: { market: Market; onTrade: (market: Mar
         <div className="market-meta">
           <span>{market.match}</span>
           <strong className="price">{market.probability}%</strong>
-          <span>₦{market.volume}K matched</span>
+          <span>{formatMatchedVolume(market.volume, currency)}</span>
         </div>
       </div>
       <div className="card-body">
@@ -171,11 +248,11 @@ function MarketCard({ market, onTrade }: { market: Market; onTrade: (market: Mar
       <div className="action-zones">
         <button className="zone zone-yes" type="button" onClick={() => onTrade(market, market.yesLabel)}>
           <span>{market.yesLabel}</span>
-          <small>{market.probability} / ₦1</small>
+          <small>{market.probability} / {formatMoney(payoutUnit[currency], currency)}</small>
         </button>
         <button className="zone zone-no" type="button" onClick={() => onTrade(market, market.noLabel)}>
           <span>{market.noLabel}</span>
-          <small>{100 - market.probability} / ₦1</small>
+          <small>{100 - market.probability} / {formatMoney(payoutUnit[currency], currency)}</small>
         </button>
       </div>
     </article>
@@ -197,7 +274,7 @@ function SkeletonCard() {
   );
 }
 
-function MarketPulsePanel() {
+function MarketPulsePanel({ currency }: { currency: Currency }) {
   return (
     <aside className="desk-panel" aria-label="Market pulse">
       <div className="panel-section">
@@ -211,7 +288,7 @@ function MarketPulsePanel() {
       <div className="panel-section compact-stats">
         <div>
           <span>Volume</span>
-          <strong>₦8.4M</strong>
+          <strong>{formatMoney(convertFromNgn(8400000, currency), currency, "compact")}</strong>
         </div>
         <div>
           <span>Spread</span>
@@ -226,7 +303,7 @@ function MarketPulsePanel() {
   );
 }
 
-function TradeTray({ selection, stake, setStake, onClose }: { selection: TradeSelection | null; stake: string; setStake: (value: string) => void; onClose: () => void }) {
+function TradeTray({ selection, currency, stake, setStake, onClose }: { selection: TradeSelection | null; currency: Currency; stake: string; setStake: (value: string) => void; onClose: () => void }) {
   const [burning, setBurning] = useState(false);
   const estimate = useMemo(() => {
     if (!selection) return 0;
@@ -258,12 +335,7 @@ function TradeTray({ selection, stake, setStake, onClose }: { selection: TradeSe
           <span id="tray-match">{selection ? `${selection.market.match} · ${selection.market.clock}` : "LIV vs MCI · 63:14"}</span>
         </div>
         <div className="stake-row">
-          {[
-            ["₦500", "500"],
-            ["₦1K", "1000"],
-            ["₦5K", "5000"],
-            ["MAX", stake]
-          ].map(([label, value]) => (
+          {[...stakePresets[currency], ["MAX", stake] as [string, string]].map(([label, value]) => (
             <button type="button" key={label} onClick={() => setStake(value)}>
               {label}
             </button>
@@ -275,7 +347,7 @@ function TradeTray({ selection, stake, setStake, onClose }: { selection: TradeSe
         </label>
         <div className="quote-box">
           <span>Est. return</span>
-          <strong id="tray-return">₦{estimate.toLocaleString("en-NG")}</strong>
+          <strong id="tray-return">{formatMoney(estimate, currency)}</strong>
         </div>
         <button className={`place-bet ${burning ? "burn" : ""}`} id="place-bet" type="button" onClick={placeTrade}>
           Place Bet
@@ -290,6 +362,7 @@ export default function Home() {
   const [page, setPage] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [selection, setSelection] = useState<TradeSelection | null>(null);
+  const [currency, setCurrency] = useState<Currency>("NGN");
   const [stake, setStake] = useState("2500");
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -309,6 +382,11 @@ export default function Home() {
 
   function closeTrade() {
     setSelection(null);
+  }
+
+  function changeCurrency(nextCurrency: Currency) {
+    setCurrency(nextCurrency);
+    setStake(nextCurrency === "NGN" ? "2500" : "5");
   }
 
   function toggleTheme() {
@@ -377,7 +455,7 @@ export default function Home() {
 
   return (
     <div id="app">
-      <Topbar onToggleTheme={toggleTheme} />
+      <Topbar currency={currency} onCurrencyChange={changeCurrency} onToggleTheme={toggleTheme} />
       <main className="layout">
         <section className="feed-shell" aria-labelledby="feed-title">
           <div className="feed-head">
@@ -392,15 +470,15 @@ export default function Home() {
           <div className="hot-zone-rail" aria-hidden="true" />
           <div id="feed" className="feed" aria-live="polite">
             {markets.map((market) => (
-              <MarketCard key={market.id} market={market} onTrade={openTrade} />
+              <MarketCard key={market.id} market={market} currency={currency} onTrade={openTrade} />
             ))}
             {loadingMore ? <SkeletonCard /> : null}
           </div>
           <div id="sentinel" className="sentinel" aria-hidden="true" ref={sentinelRef} />
         </section>
-        <MarketPulsePanel />
+        <MarketPulsePanel currency={currency} />
       </main>
-      <TradeTray selection={selection} stake={stake} setStake={setStake} onClose={closeTrade} />
+      <TradeTray selection={selection} currency={currency} stake={stake} setStake={setStake} onClose={closeTrade} />
     </div>
   );
 }

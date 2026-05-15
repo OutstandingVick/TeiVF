@@ -60,7 +60,7 @@ button {
   top: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   gap: 16px;
   align-items: center;
   padding: 16px clamp(16px, 4vw, 48px);
@@ -149,6 +149,82 @@ button {
   height: 44px;
   cursor: pointer;
   font-size: 20px;
+}
+
+.wallet-shell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: max-content;
+}
+
+.wallet-balance {
+  display: grid;
+  gap: 2px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-family: var(--mono);
+  transform: skewX(-15deg);
+}
+
+.wallet-balance > * {
+  transform: skewX(15deg);
+}
+
+.wallet-balance span {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.wallet-balance strong {
+  color: var(--lime);
+  font-size: 13px;
+}
+
+.currency-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--line);
+  background: var(--card);
+  transform: skewX(-15deg);
+}
+
+.currency-toggle button,
+.wallet-action {
+  min-height: 38px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.currency-toggle button {
+  min-width: 44px;
+  color: var(--muted);
+  transform: skewX(15deg);
+}
+
+.currency-toggle button.active {
+  color: #050505;
+  background: var(--lime);
+}
+
+.wallet-action {
+  padding: 0 11px;
+  border: 1px solid rgba(0, 255, 0, 0.35);
+  color: var(--lime);
+  background: rgba(0, 255, 0, 0.08);
+  transform: skewX(-15deg);
+}
+
+.wallet-action.muted {
+  border-color: var(--line);
+  color: var(--muted);
+  background: var(--card);
 }
 
 .layout {
@@ -705,6 +781,22 @@ h1 {
     grid-template-columns: auto 1fr auto;
     gap: 10px;
     padding: 12px;
+  }
+
+  .wallet-shell {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    gap: 8px;
+  }
+
+  .wallet-balance {
+    min-width: 0;
+  }
+
+  .wallet-action {
+    padding: 0 9px;
+    font-size: 10px;
   }
 
   .velocity-mark {
