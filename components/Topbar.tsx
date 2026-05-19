@@ -1,9 +1,10 @@
 import { type Currency } from "../lib/currency";
 import { matchPills } from "../lib/markets";
 import { TeiLogo } from "./TeiLogo";
+import { type WalletState } from "../lib/wallet";
 import { WalletBar } from "./WalletBar";
 
-export function Topbar({ currency, onCurrencyChange, onToggleTheme }: { currency: Currency; onCurrencyChange: (currency: Currency) => void; onToggleTheme: () => void }) {
+export function Topbar({ currency, wallet, onCurrencyChange, onWalletToggle, onToggleTheme }: { currency: Currency; wallet: WalletState; onCurrencyChange: (currency: Currency) => void; onWalletToggle: () => void; onToggleTheme: () => void }) {
   return (
     <header className="topbar">
       <a className="velocity-mark" aria-label="Tei home" href="#">
@@ -20,7 +21,7 @@ export function Topbar({ currency, onCurrencyChange, onToggleTheme }: { currency
           </button>
         ))}
       </div>
-      <WalletBar currency={currency} onCurrencyChange={onCurrencyChange} />
+      <WalletBar currency={currency} wallet={wallet} onCurrencyChange={onCurrencyChange} onWalletToggle={onWalletToggle} />
       <button className="theme-toggle" type="button" aria-label="Toggle color mode" onClick={onToggleTheme}>
         ◐
       </button>
