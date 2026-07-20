@@ -75,10 +75,9 @@ button {
   width: 82px;
   height: 48px;
   padding: 0;
-  border: 2px solid var(--lime);
-  background: #090909;
+  border: 0;
+  background: transparent;
   text-decoration: none;
-  clip-path: polygon(9px 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
 }
 
 .tei-logo {
