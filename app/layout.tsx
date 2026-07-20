@@ -5,8 +5,11 @@ export const metadata: Metadata = {
   title: "TeiVF | Match Moments",
   description: "Live yes-or-no sports moments on TeiVF.",
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png", sizes: "64x64" }
+    ],
+    shortcut: "/favicon.ico",
     apple: "/tei-velocity-mark.png"
   }
 };
