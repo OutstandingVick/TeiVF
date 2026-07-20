@@ -76,26 +76,16 @@ button {
   height: 48px;
   padding: 0;
   border: 2px solid var(--lime);
+  background: #090909;
   text-decoration: none;
-  transform: skewX(-15deg);
+  clip-path: polygon(9px 0, 100% 0, calc(100% - 9px) 100%, 0 100%);
 }
 
 .tei-logo {
+  display: block;
   width: 68px;
-  height: 44px;
-  transform: skewX(15deg);
-}
-
-.logo-green {
-  fill: var(--lime);
-}
-
-.logo-white {
-  fill: #f8f8f8;
-}
-
-.logo-obsidian {
-  fill: #090909;
+  height: auto;
+  object-fit: contain;
 }
 
 .match-strip {
@@ -867,7 +857,7 @@ h1 {
 
   .tei-logo {
     width: 58px;
-    height: 38px;
+    height: auto;
   }
 
   .match-pill {
