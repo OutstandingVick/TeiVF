@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { type Currency, formatMoney, stakePresets } from "../lib/currency";
 import { type TradeSelection } from "../lib/markets";
 import { vibrate } from "../lib/haptics";
+import { type WalletState, shortenAddress } from "../lib/wallet";
 
-export function TradeTray({ selection, currency, stake, setStake, onClose }: { selection: TradeSelection | null; currency: Currency; stake: string; setStake: (value: string) => void; onClose: () => void }) {
+export function TradeTray({ selection, currency, wallet, stake, setStake, onClose }: { selection: TradeSelection | null; currency: Currency; wallet: WalletState; stake: string; setStake: (value: string) => void; onClose: () => void }) {
   const [burning, setBurning] = useState(false);
   const estimate = useMemo(() => {
     if (!selection) return 0;
@@ -48,6 +49,10 @@ export function TradeTray({ selection, currency, stake, setStake, onClose }: { s
         <div className="quote-box">
           <span>Est. return</span>
           <strong id="tray-return">{formatMoney(estimate, currency)}</strong>
+        </div>
+        <div className="settlement-rail" aria-label="Settlement network">
+          <span>Settles on {wallet.network}</span>
+          <strong>{wallet.connected && wallet.address ? shortenAddress(wallet.address) : "Wallet not connected"}</strong>
         </div>
         <button className={`place-bet ${burning ? "burn" : ""}`} id="place-bet" type="button" onClick={placeTrade}>
           Place Bet

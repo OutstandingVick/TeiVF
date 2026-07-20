@@ -192,6 +192,7 @@ button {
 }
 
 .currency-toggle button,
+.wallet-connect,
 .wallet-action {
   min-height: 38px;
   border: 0;
@@ -211,6 +212,32 @@ button {
 .currency-toggle button.active {
   color: #050505;
   background: var(--lime);
+}
+
+.wallet-connect {
+  display: grid;
+  gap: 2px;
+  min-width: 132px;
+  padding: 5px 11px;
+  border: 1px solid rgba(0, 255, 0, 0.35);
+  color: var(--ink);
+  background: rgba(0, 255, 0, 0.08);
+  text-align: left;
+  transform: skewX(-15deg);
+}
+
+.wallet-connect > * {
+  transform: skewX(15deg);
+}
+
+.wallet-connect span {
+  color: var(--lime);
+  font-size: 9px;
+}
+
+.wallet-connect strong {
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .wallet-action {
@@ -679,6 +706,24 @@ h1 {
   color: var(--lime);
 }
 
+.settlement-rail {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0, 255, 0, 0.28);
+  color: var(--muted);
+  background: rgba(0, 255, 0, 0.05);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.settlement-rail strong {
+  color: var(--ink);
+  font-weight: 800;
+}
+
 .place-bet {
   width: 100%;
   background: var(--lime);
@@ -786,9 +831,15 @@ h1 {
   .wallet-shell {
     grid-column: 1 / -1;
     grid-row: 2;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    display: flex;
     gap: 8px;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .wallet-shell::-webkit-scrollbar {
+    display: none;
   }
 
   .theme-toggle {
@@ -798,6 +849,10 @@ h1 {
 
   .wallet-balance {
     min-width: 0;
+  }
+
+  .wallet-connect {
+    min-width: 126px;
   }
 
   .wallet-action {

@@ -9,6 +9,7 @@ import { TradeTray } from "../components/TradeTray";
 import { type Currency } from "../lib/currency";
 import { vibrate } from "../lib/haptics";
 import { injectedSeeds, type Market, marketFromTuple, makePage, type TradeSelection, updateMarket } from "../lib/markets";
+import { createConnectedDemoWallet, disconnectedWallet } from "../lib/wallet";
 
 export default function Home() {
   const [markets, setMarkets] = useState<Market[]>([]);
@@ -17,6 +18,7 @@ export default function Home() {
   const [selection, setSelection] = useState<TradeSelection | null>(null);
   const [currency, setCurrency] = useState<Currency>("NGN");
   const [stake, setStake] = useState("2500");
+  const [wallet, setWallet] = useState(disconnectedWallet);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   function appendPage() {
@@ -40,6 +42,10 @@ export default function Home() {
   function changeCurrency(nextCurrency: Currency) {
     setCurrency(nextCurrency);
     setStake(nextCurrency === "NGN" ? "2500" : "5");
+  }
+
+  function toggleWallet() {
+    setWallet((current) => (current.connected ? disconnectedWallet : createConnectedDemoWallet()));
   }
 
   function toggleTheme() {
@@ -108,7 +114,7 @@ export default function Home() {
 
   return (
     <div id="app">
-      <Topbar currency={currency} onCurrencyChange={changeCurrency} onToggleTheme={toggleTheme} />
+      <Topbar currency={currency} wallet={wallet} onCurrencyChange={changeCurrency} onWalletToggle={toggleWallet} onToggleTheme={toggleTheme} />
       <main className="layout">
         <section className="feed-shell" aria-labelledby="feed-title">
           <div className="feed-head">
@@ -131,7 +137,7 @@ export default function Home() {
         </section>
         <MarketPulsePanel currency={currency} />
       </main>
-      <TradeTray selection={selection} currency={currency} stake={stake} setStake={setStake} onClose={closeTrade} />
+      <TradeTray selection={selection} currency={currency} wallet={wallet} stake={stake} setStake={setStake} onClose={closeTrade} />
     </div>
   );
 }
